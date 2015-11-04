@@ -3,29 +3,37 @@
 <html>
 
 <head>
-	<script src="index.js"></script>
-	<link rel="stylesheet" type="text/css" href="index.css">'
+	<link rel="stylesheet" type="text/css" href="index.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="index.js"> </script>
 	
-	<title>Assignment 4 CRUD</title>
+	<title>Assignment 4 CURD</title>
 </head>
 
-<header> 
-	CSC309 Assignment 4 - Create, Read, Update, and Delete
-</header>
+<div id="topBar"> </div>
+	<div id="bottomBar"> </div>
+	
+	
+
 
 <body>
-	<div id="mainPane">
-		<div id="mainText">
-			Welcome User. <br>
-			Please Login or Register. 
+	<div id="swapPane">
+		<div id="middleBar"> 
+				CSC309 Assignment 4 - Create, Read, Update, and Delete
 		</div>
-		<div id="mainButtons">
-			<button class="btn" type="button">Login</button>
-			<button class="btn" type="button">Register</button>
+		
+		<div id="mainPane">
+			<div id="mainText">
+				<h1> Welcome User </h1>
+				<h2> Please Login or Register </h2>
+			</div>
+			<div id="mainButtons">
+				<button class="btn" type="button" onclick="moveTo('login')">Login</button>
+				<button class="btn" type="button" onclick="moveTo('register')">Register</button>
+			</div>
 		</div>
 	</div>
-
-
 </body>
+
 
 </html>

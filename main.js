@@ -2,15 +2,88 @@ var assert = require('assert');
 var fs = require('fs');
 var express = require('express');
 var app = express();
+var bodyParser = require('body-parser')
+
 var mongoClient = require('mongodb').MongoClient;
 var mongoose = require('mongoose');
+
 var PORT = 3000;
 
-var testNum = "test5";
+var testNum = "test8";
 var uniqueTestDB = testNum;
 
+app.use(express.static('javascript'));
 app.use(express.static('html'));
 app.use(express.static('css'));
+
+
+app.use(bodyParser.json());
+
+// TODO: Redirect user to valid page or display invalid name/pass
+// Store currentUser? Send info back to client? (REST)
+app.post("/loginVerification", function (req, res) {
+	console.log("Login Request Received");
+	User.findOne({ "email": req.body.mail }, 
+	function (err, user) {
+		if (err) {
+			console.log("verifyLogin Error " + err);
+			res.send("An Error Has Occurred, Please Try Again"); 
+		}
+		if (user == undefined)
+			return false;
+		if (req.body.pass === user.password) { 
+			console.log("Valid Login");
+			res.send("Success");
+		}
+		else {
+			console.log("Invalid Login");
+			res.send("Invalid Login"); 
+		}
+		
+	});
+});
+
+
+app.post("/loadTable", function (req, res) {
+	console.log("Load Table");
+	User.find( function (err, users) {
+		if (err) {
+			console.log("Load Table Error");
+		} else {
+			//console.log("users: " + users);
+			res.send(users);
+		}
+	});
+});
+			
+			
+			
+app.post("/registration", function (req, res) {
+	console.log("Registration Request Received");
+	
+	console.log("addUser");
+	User.findOne({ email: req.body.mail }, function (err, user) {
+		if (err) {
+			console.log(err);
+			res.send("Error");
+		}
+		if (user == undefined) {
+			console.log("New User");
+			var newUser = new User({username: req.body.mail, password: req.body.pass, type:"user", email:req.body.mail, image: "default", desc: ""});
+			newUser.save();
+			res.send("Success");
+		}
+		else {
+			console.log("User already exists");
+			res.send("User Exists");
+		}
+	});
+});
+
+app.listen(PORT);
+
+
+// Database code below
 
 mongoose.connect('mongodb://localhost/DB', PORT);
 var db = mongoose.connection;
@@ -33,13 +106,6 @@ userSchema.methods.getData = function () {
 	console.log(data);
 }
 
-userSchema.methods.checkLogin = function (name, pass) {
-	if (this.username === name && this.password === pass)
-		console.log("Valid User");
-	else
-		console.log("Invalid Login");
-}
-
 console.log("Methods Added");
 
 var User = mongoose.model('User', userSchema, uniqueTestDB);
@@ -47,9 +113,9 @@ console.log("Model Created");
 
 // Test Code - Db insertion
 function initDB () {
-	var one = new User({username:"Alice", password:"Lord", type:"super", email:"a"});
-	var two = new User({username:"Bob", password:"second", type:"admin", email:"b"});
-	var three = new User({username:"Eve", password:"Stalker", type:"user", email:"c"});
+	var one = new User({username:"Alice", password:"Lord", type:"super", email:"a", image: "default", desc:""});
+	var two = new User({username:"Bob", password:"second", type:"admin", email:"b", image: "default", desc:""});
+	var three = new User({username:"Eve", password:"Stalker", type:"user", email:"c", image: "default", desc:""});
 
 	one.save();
 	two.save();
@@ -70,20 +136,25 @@ function listUsers () {
 	});
 }
 
-
-function addUser (name, pass, mail) {
-	console.log("addUser");
-	User.findOne({ email: mail }, function (err, user) {
-		if (err)
-			return err;
-		if (user == undefined) {
-			console.log("New User");
-			var newUser = new User({username: name, password: pass, type:"user", email:mail});
-			newUser.save();
+/* function verifyLogin (mail, pass) {
+	User.findOne({ "email": mail }, 
+	function (err, user) {
+		console.log("verify name: " + user.email + " pass: " + user.password);
+		console.log("given name: " + mail + " pass: " + pass);
+		if (err) {
+			console.log("verifyLogin Error " + err);
+			return false;
 		}
-		else
-			console.log("User already exists");
+		if (pass == user.password) 
+			return true
+		else 
+			return false; 
+		
 	});
+} */
+
+function addUser (mail, pass) {
+
 }
 
 function userUpdate (currentUser, target, field, newInfo) {
@@ -103,7 +174,7 @@ function userUpdate (currentUser, target, field, newInfo) {
 	});		
 }
 
-// currentUser currently is just a String, howto get user object
+// currentUser currently is just a String, how to get user object
 // TODO: ^
 function adminUpdate (currentUser, target, field, newInfo) {
 	console.log("Admin Update");
@@ -150,13 +221,12 @@ function findUser (mail) {
 	});
 }
 
-//initDB();
-//addUser("Mark", "The Dark", "d");
+initDB();
+addUser("Mark", "The Dark", "d");
 
 
 //userUpdate('d', 'd', 'image', "Roasted");
 //adminUpdate('b', 'd', 'image', "Trolled");
 
-setTimeout(listUsers, 2000);
+//setTimeout(listUsers, 2000);
 
-app.listen(PORT);
