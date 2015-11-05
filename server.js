@@ -233,8 +233,7 @@ function findUser (mail) {
 	});
 }
 
-initDB();
-addUser("Mark", "The Dark", "d");
+//initDB();
 
 
 //userUpdate('d', 'd', 'image', "Roasted");

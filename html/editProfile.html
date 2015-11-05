@@ -6,14 +6,12 @@
 	<link rel="stylesheet" type="text/css" href="index.css">
 	<link rel="stylesheet" type="text/css" href="editProfile.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script src="profile.js"></script>
+	<script src="editProfile.js"></script>
 	
 	<title>Profile Page</title>
 </head>
 
-<div id="topBar"> </div>
-<div id="bottomBar"> </div>
-	
+
 	
 
 
@@ -26,16 +24,29 @@
 					<img id="image" src="default.png" alt="Image not Found">
 				</div>
 				<br>
-				<div id="infoPane">
-					Email: <br> reallygoodemail@mail.mail<br>
-					Username: <br> edgeLord592<br>
-					Description: <br> A like long walks on the beach and candle lit dinners. Also cliches.<br>
+				<div id="editPane">
+					Email: <br> Static <br>
+					Display Name: <br> <input type="text" id="newName"> <br>
+					Description: <br> <textarea id="newDesc" rows="5" cols="50"></textarea> <br>
+				<button type="button" class="btn" onclick="save()">Save</button>
+				<button type="button" class="btn" onclick="moveTo('landing')">Cancel</button>
 				</div>
-			<button id="editProfile" type="button" class="btn">Edit Profile</button>
+				<br>
+				<div class="msg"> </div>
+				<div id="changePass">
+					Old Password: <input type="text" id="oldPass"> <br>
+					New Password: <input type="text" id="newPass"> <br>
+					Confirm New Password: <input type="text" id="newPassConfirmation"> <br>
+					<button type="button" class="btn" onclick="changePass()">Confirm New Password</button>
+				</div>
 			</div>
 		</div>
 	</div>
 </body>
 
+
+<div id="topBar"> </div>
+<div id="bottomBar"> </div>
+	
 
 </html>

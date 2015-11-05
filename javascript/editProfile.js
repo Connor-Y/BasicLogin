@@ -1,13 +1,9 @@
 
-function editProfile () {
-	moveTo('editProfile');
-	
-}
-
-$(window).ready( function () {
-	console.log("Display Profile");
+function save() {
 	var data = {}
 	data.mail = "aa" // TODO: get profile email
+	data.username = $("#newName").val();
+	data.desc = $("#newDesc").val();
 	console.log(JSON.stringify(data));
 	$.ajax({
 		// URL for request
@@ -45,5 +41,12 @@ $(window).ready( function () {
 			
 		}
 	}); 
-});
+}
 
+function changePass() {
+	if ($("#newPass").val() != $("#newpassConfirmation").val())
+		$(".msg").html("Passwords don't match");
+	else {
+		console.log("Matches");
+	}
+}
