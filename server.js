@@ -60,8 +60,6 @@ app.post("/loadTable", function (req, res) {
 			
 app.post("/registration", function (req, res) {
 	console.log("Registration Request Received");
-	
-	console.log("addUser");
 	User.findOne({ email: req.body.mail }, function (err, user) {
 		if (err) {
 			console.log(err);
@@ -69,7 +67,7 @@ app.post("/registration", function (req, res) {
 		}
 		if (user == undefined) {
 			console.log("New User");
-			var newUser = new User({username: req.body.mail, password: req.body.pass, type:"user", email:req.body.mail, image: "default", desc: ""});
+			var newUser = new User({username: req.body.mail, password: req.body.pass, type:"user", email:req.body.mail, image: "default.png", desc: ""});
 			newUser.save();
 			res.send("Success");
 		}
@@ -77,6 +75,23 @@ app.post("/registration", function (req, res) {
 			console.log("User already exists");
 			res.send("User Exists");
 		}
+	});
+});
+
+app.post("/profile", function (req, res) {
+	console.log("Profile Request Received");
+	User.findOne({ email: req.body.mail }, function (err, user) {
+		if (err) {
+			console.log(err);
+			res.send("Error");
+		}
+		if (user == undefined) {
+			console.log("User doesn't exist error");
+			res.send("Error");
+		} else {
+			console.log("Success");
+			res.send(user);
+		}		
 	});
 });
 
@@ -113,9 +128,9 @@ console.log("Model Created");
 
 // Test Code - Db insertion
 function initDB () {
-	var one = new User({username:"Alice", password:"Lord", type:"super", email:"a", image: "default", desc:""});
-	var two = new User({username:"Bob", password:"second", type:"admin", email:"b", image: "default", desc:""});
-	var three = new User({username:"Eve", password:"Stalker", type:"user", email:"c", image: "default", desc:""});
+	var one = new User({username:"Alice", password:"Lord", type:"super", email:"a", image: "default.png", desc:""});
+	var two = new User({username:"Bob", password:"second", type:"admin", email:"b", image: "default.png", desc:""});
+	var three = new User({username:"Eve", password:"Stalker", type:"user", email:"c", image: "default.png", desc:""});
 
 	one.save();
 	two.save();
@@ -153,9 +168,6 @@ function listUsers () {
 	});
 } */
 
-function addUser (mail, pass) {
-
-}
 
 function userUpdate (currentUser, target, field, newInfo) {
 	console.log("User Update");

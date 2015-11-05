@@ -7,7 +7,7 @@ $(window).ready( function() {
 			type: "POST",
 
 			// Expected return data
-			dataType: "html",
+			dataType: "json",
 			// On Success
 			success: function(data) {
 				console.log("Success");
@@ -43,34 +43,8 @@ $(window).ready( function() {
 
 function clickableTable () {
 	$('#userTable tbody tr').on("click", function () {
-		var mail = $(this).find(".mail").html());
-		$.ajax({
-			// URL for request
-			url: 'profile',
-			// Request type
-			type: "POST",
-
-			// Expected return data
-			dataType: "html",
-			// On Success
-			success: function(data) {
-				console.log("Success");
-				// TODO: Move to profile page and
-				// Load in the profile from mail
-			},
-			
-			error: function(status, errorThrown) {
-				console.log ("Error: " + errorThrown + ", Status: " + status);
-			}
-	});
-		
-		
-		
-		
-		
-		
-		
-		
+		var mail = $(this).find(".mail").html();
+		moveTo('profile');
 	});
 }
 

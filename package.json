@@ -1,17 +1,27 @@
 {
-  "name": "init",
+  "name": "package.json",
   "version": "1.0.0",
-  "description": "test init",
-  "main": "index.js",
+  "description": "",
+  "main": "server.js",
   "dependencies": {
     "body-parser": "^1.14.1",
+    "mongodb": "^2.0.47",
     "express": "^4.13.3",
     "mongoose": "^4.2.3"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
-  "author": "",
-  "license": "ISC"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Connor-Y/BasicLogin.git"
+  },
+  "author": "Connor-Y",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Connor-Y/BasicLogin/issues"
+  },
+  "homepage": "https://github.com/Connor-Y/BasicLogin#readme"
 }
