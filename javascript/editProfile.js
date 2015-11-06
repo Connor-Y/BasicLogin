@@ -7,7 +7,7 @@ function save() {
 	console.log(JSON.stringify(data));
 	$.ajax({
 		// URL for request
-		url: 'profile',
+		url: 'saveProfile',
 		// Request type
 		type: "POST",
 		// Data sent

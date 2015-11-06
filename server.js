@@ -1,26 +1,31 @@
 var assert = require('assert');
-var fs = require('fs');
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser')
+var fs = require('fs'); // TODO: might not need these
 
 var mongoClient = require('mongodb').MongoClient;
 var mongoose = require('mongoose');
-
 var PORT = 3000;
 
 var testNum = "test8";
 var uniqueTestDB = testNum;
 
+var express = require('express');
+var bodyParser = require('body-parser');
+var session = require('express-session');
+var app = express();
+
+app.use(session({secret: '228974482',
+	resave: false,
+	saveUninitialized: true
+	}));
+var sess;
+
 app.use(express.static('javascript'));
 app.use(express.static('html'));
 app.use(express.static('css'));
 
-
 app.use(bodyParser.json());
 
-// TODO: Redirect user to valid page or display invalid name/pass
-// Store currentUser? Send info back to client? (REST)
+// TODO: Store currentUser Send info back to client? (REST)
 app.post("/loginVerification", function (req, res) {
 	console.log("Login Request Received");
 	User.findOne({ "email": req.body.mail }, 
@@ -33,6 +38,9 @@ app.post("/loginVerification", function (req, res) {
 			return false;
 		if (req.body.pass === user.password) { 
 			console.log("Valid Login");
+			sess=req.session;
+			sess.email = req.body.mail;
+			sess.type = user.type;
 			res.send("Success");
 		}
 		else {
@@ -50,7 +58,6 @@ app.post("/loadTable", function (req, res) {
 		if (err) {
 			console.log("Load Table Error");
 		} else {
-			//console.log("users: " + users);
 			res.send(users);
 		}
 	});
@@ -90,9 +97,20 @@ app.post("/profile", function (req, res) {
 			res.send("Error");
 		} else {
 			console.log("Success");
+			user.sessMail = sess.email;
+			user.sessType = sess.type;
 			res.send(user);
 		}		
 	});
+});
+
+app.post("saveProfile", function (req, res) {
+	
+	
+});
+
+app.get("*", function (req, res) {
+	res.redirect('/');	
 });
 
 app.listen(PORT);
@@ -112,7 +130,9 @@ var userSchema = mongoose.Schema({
 	type: { type: String, required: true },
 	email: { type: String, required: true, unique: true },
 	image: String,
-	desc: String
+	desc: String,
+	sessMail: String,
+	sessType: String
 });
 console.log("Schema built");
 
@@ -150,23 +170,6 @@ function listUsers () {
 		console.log("===");
 	});
 }
-
-/* function verifyLogin (mail, pass) {
-	User.findOne({ "email": mail }, 
-	function (err, user) {
-		console.log("verify name: " + user.email + " pass: " + user.password);
-		console.log("given name: " + mail + " pass: " + pass);
-		if (err) {
-			console.log("verifyLogin Error " + err);
-			return false;
-		}
-		if (pass == user.password) 
-			return true
-		else 
-			return false; 
-		
-	});
-} */
 
 
 function userUpdate (currentUser, target, field, newInfo) {
