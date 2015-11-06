@@ -1,5 +1,6 @@
 
 $(window).ready( function() {
+	console.log("---");
 	$.ajax({
 			// URL for request
 			url: 'loadTable',
@@ -10,8 +11,6 @@ $(window).ready( function() {
 			dataType: "json",
 			// On Success
 			success: function(data) {
-				console.log("Success");
-				console.log(data);
 				if (data) {
 					var len = data.length;
 					var txt = "";
@@ -42,6 +41,7 @@ $(window).ready( function() {
 });
 
 function clickableTable () {
+	
 	$('#userTable tbody tr').on("click", function () {
 		moveTo('profile');
 		console.log("Display Profile");
@@ -50,7 +50,7 @@ function clickableTable () {
 		console.log(JSON.stringify(query));
 		$.ajax({
 			// URL for request
-			url: 'profile',
+			url: 'setView',
 			// Request type
 			type: "POST",
 			// Data sent
@@ -65,19 +65,7 @@ function clickableTable () {
 					moveTo('index');
 				}
 				else {
-					console.log("Current Sess: " + data.sess);
-					var username;
-					if (data.username == undefined)
-						username = data.email;
-					else
-						username = data.username;
-					var txt = "Email: <br> " + data.email + "<br> Username: <br> " + username + "<br> Description: <br>" + data.desc; 
-					$("#infoPane").html(txt);
-					// TODO: Change image as well
-					console.log("type: " + data.sessType);
-					if (data.sessMail != query.mail && !(data.sessType == 'admin' || data.sessType == 'super'))
-						$("#editBtn").hide();
-				
+					moveTo('profile');
 				}
 			},
 			// On Failure, print error to console
@@ -88,7 +76,6 @@ function clickableTable () {
 		}); 
 	});
 }	
-		
 
 
 

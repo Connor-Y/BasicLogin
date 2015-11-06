@@ -1,6 +1,8 @@
 var assert = require('assert');
 var fs = require('fs'); // TODO: might not need these
 
+var sess;
+
 var mongoClient = require('mongodb').MongoClient;
 var mongoose = require('mongoose');
 var PORT = 3000;
@@ -17,7 +19,7 @@ app.use(session({secret: '228974482',
 	resave: false,
 	saveUninitialized: true
 	}));
-var sess;
+
 
 app.use(express.static('javascript'));
 app.use(express.static('html'));
@@ -41,6 +43,7 @@ app.post("/loginVerification", function (req, res) {
 			sess=req.session;
 			sess.email = req.body.mail;
 			sess.type = user.type;
+			sess.view = "index";
 			res.send("Success");
 		}
 		else {
@@ -85,9 +88,16 @@ app.post("/registration", function (req, res) {
 	});
 });
 
+app.post("/setView", function (req, res) {
+	console.log("setView");
+	if (sess != undefined)
+		sess.view = req.body.mail;
+});
+
 app.post("/profile", function (req, res) {
 	console.log("Profile Request Received");
-	User.findOne({ email: req.body.mail }, function (err, user) {
+	console.log("Goto: " + req.body.sessView); 
+	User.findOne({ email: req.body.sessView }, function (err, user) {
 		if (err) {
 			console.log(err);
 			res.send("Error");
@@ -97,17 +107,60 @@ app.post("/profile", function (req, res) {
 			res.send("Error");
 		} else {
 			console.log("Success");
-			user.sessMail = sess.email;
-			user.sessType = sess.type;
 			res.send(user);
 		}		
 	});
 });
 
-app.post("saveProfile", function (req, res) {
-	
+app.post("/getSession", function (req, res) {
+	console.log("Session Request");
+	var temp = {sessMail: sess.email, sessType: sess.type, sessView: sess.view};
+	res.send(JSON.stringify(temp));
 	
 });
+
+app.post("/saveProfile", function (req, res) {
+	console.log("Save Profile Request");
+	//console.log(req.body);
+	if (req.body.username != '')
+		userUpdate(req.body.mail, 'username', req.body.username);
+	if (req.body.desc != '')
+		userUpdate(req.body.mail, 'desc', req.body.desc);
+	res.redirect('profile');	
+});
+
+app.post("/deleteProfile", function (req, res) {
+	console.log("Delete Profile Request");
+	console.log(req.body);
+	User.findOneAndRemove({ email: req.body.sessView}, function (err) {
+		if (err) {
+			console.log("Error: " + err);
+			res.send("Error");
+		}
+	});
+	if (req.body.sessView == req.body.sessMail)
+		sess.mail = "";
+	sess.view = "index";
+	res.send("Success");
+});
+
+function userUpdate (target, field, newInfo) {
+	if (target == undefined)
+		return false;
+	if (newInfo == '')
+		return false;
+	var updatedField = {};
+	updatedField[field] = newInfo;
+	console.log(updatedField);
+	User.findOneAndUpdate({ email: target }, { $set: updatedField },
+	function (err) {
+		if (err) {
+			console.log("Error: " + err);
+			return false;
+		}
+	});				
+}
+
 
 app.get("*", function (req, res) {
 	res.redirect('/');	
@@ -131,8 +184,6 @@ var userSchema = mongoose.Schema({
 	email: { type: String, required: true, unique: true },
 	image: String,
 	desc: String,
-	sessMail: String,
-	sessType: String
 });
 console.log("Schema built");
 
@@ -172,7 +223,7 @@ function listUsers () {
 }
 
 
-function userUpdate (currentUser, target, field, newInfo) {
+/* function userUpdate (currentUser, target, field, newInfo) {
 	console.log("User Update");
 	if (currentUser == undefined || currentUser != target || field == 'email' || field == 'type')
 		return false;
@@ -187,10 +238,8 @@ function userUpdate (currentUser, target, field, newInfo) {
 		}
 		user.save();
 	});		
-}
+} */
 
-// currentUser currently is just a String, how to get user object
-// TODO: ^
 function adminUpdate (currentUser, target, field, newInfo) {
 	console.log("Admin Update");
 	if (currentUser == undefined || currentUser.type != 'admin' || field == 'type')

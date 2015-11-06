@@ -21,3 +21,28 @@ function moveTo(page) {
 	});
 }
 
+function getSession(callback) {
+	console.log("getSession");
+	$.ajax({
+		// URL for request
+		url: 'getSession',
+		// Request type
+		type: "POST",
+		// Expected data
+		dataType: "json",
+		// On Success, atttempt to perform action on received data.
+		success: function(sess) {
+			console.log("getSession sess: " + JSON.stringify(sess));
+			callback(sess);
+			
+			
+		},
+		// On Failure, print error to console
+		error: function(status, errorThrown) {
+			console.log ("Error: " + errorThrown + ", Status: " + status);
+			
+		}
+	});
+	
+}
+	
