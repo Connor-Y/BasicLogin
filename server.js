@@ -7,7 +7,7 @@ var mongoClient = require('mongodb').MongoClient;
 var mongoose = require('mongoose');
 var PORT = 3000;
 
-var testNum = "test8";
+var testNum = "test20";
 var uniqueTestDB = testNum;
 
 var express = require('express');
@@ -43,7 +43,8 @@ app.post("/loginVerification", function (req, res) {
 			sess=req.session;
 			sess.email = req.body.mail;
 			sess.type = user.type;
-			sess.view = "index";
+			sess.view = "landing";
+			sess.targetType = null;
 			res.send("Success");
 		}
 		else {
@@ -75,11 +76,28 @@ app.post("/registration", function (req, res) {
 			console.log(err);
 			res.send("Error");
 		}
-		if (user == undefined) {
+		if (user == null) {
+			console.log("User1: " + user);
 			console.log("New User");
-			var newUser = new User({username: req.body.mail, password: req.body.pass, type:"user", email:req.body.mail, image: "default.png", desc: ""});
-			newUser.save();
-			res.send("Success");
+			var firstUser = false;
+			User.findOne({}, function (err, result) {
+				console.log("Result: " + result);
+				if (err) {
+					console.log(err);
+					res.redirect('/');
+				}
+				if (result == null)
+					firstUser = true;	
+				
+				var newUser;
+				console.log("first: " + firstUser)
+				if (firstUser === true)
+					newUser = new User({username: req.body.mail, password: req.body.pass, type:"super", email:req.body.mail, image: "default.png", desc: ""});
+				else
+					newUser = new User({username: req.body.mail, password: req.body.pass, type:"user", email:req.body.mail, image: "default.png", desc: ""});
+				newUser.save();
+				res.send("Success");
+			});	
 		}
 		else {
 			console.log("User already exists");
@@ -90,8 +108,17 @@ app.post("/registration", function (req, res) {
 
 app.post("/setView", function (req, res) {
 	console.log("setView");
-	if (sess != undefined)
+	if (sess != undefined) {
 		sess.view = req.body.mail;
+		User.findOne({email: req.body.mail}, function (err, user) {
+			if (err) {
+				console.log("Error: " + err)
+				sess.targetType = null;
+			} else {
+				sess.targetType = user.type;
+			}
+		});
+	}
 });
 
 app.post("/profile", function (req, res) {
@@ -114,7 +141,7 @@ app.post("/profile", function (req, res) {
 
 app.post("/getSession", function (req, res) {
 	console.log("Session Request");
-	var temp = {sessMail: sess.email, sessType: sess.type, sessView: sess.view};
+	var temp = {sessMail: sess.email, sessType: sess.type, sessView: sess.view, sessTargetType: sess.targetType};
 	res.send(JSON.stringify(temp));
 	
 });
@@ -144,7 +171,21 @@ app.post("/deleteProfile", function (req, res) {
 	res.send("Success");
 });
 
+app.post("/toggleAdmin", function (req, res) {
+	if (req.body.sessTargetType == 'admin') {
+		userUpdate(req.body.sessView, 'type', 'user');
+		sess.targetType = 'user';
+		res.send(req.body.sessView + " is now an User");
+	}
+	else {
+		userUpdate(req.body.sessView, 'type', 'admin');
+		sess.targetType = 'admin';
+		res.send(req.body.sessView + " is now an Admin");
+	}
+});
+
 function userUpdate (target, field, newInfo) {
+	console.log("User Update");
 	if (target == undefined)
 		return false;
 	if (newInfo == '')
@@ -211,85 +252,6 @@ function initDB () {
 	console.log("---");	
 } // Test Code End
 
-function listUsers () {
-	User.find(function (err, users) {
-		console.log("User List:");
-		if (err) 
-			return console.error(err);
-		else
-			console.log(users);
-		console.log("===");
-	});
-}
-
-
-/* function userUpdate (currentUser, target, field, newInfo) {
-	console.log("User Update");
-	if (currentUser == undefined || currentUser != target || field == 'email' || field == 'type')
-		return false;
-	var updatedField = {};
-	updatedField[field] = newInfo;
-	var query = { email: target };
-	User.findOneAndUpdate(query, { $set: updatedField },
-	function (err, user) {
-		if (err) {
-			console.bind.error(err);
-			return false;
-		}
-		user.save();
-	});		
-} */
-
-function adminUpdate (currentUser, target, field, newInfo) {
-	console.log("Admin Update");
-	if (currentUser == undefined || currentUser.type != 'admin' || field == 'type')
-		return false;
-	console.log("query");
-	var query = { email: target };
-	if (field == 'email') {
-		User.findOneAndUpdate(query, { $set: {email: newInfo} },
-		function (err, user) {
-			if (err) {
-				console.bind.error(err);
-				return false;
-			}
-			user.save();
-		});
-	}
-	else
-		userUpdate(target, target, field, newInfo);
-}
-
-function superUpdate(currentUser, target, field, newInfo) {
-	if (currentUser == undefined || currentUser.type != 'super')
-		return false;
-	var query = { email: target };
-	if (field == 'type') {
-		User.findOneAndUpdate(query, { $set: {type: newInfo} },
-		function (err, user) {
-			if (err) {
-				console.bind.error(err);
-				return false;
-			}
-			user.save();
-		});
-	}
-	else
-		adminUpdate(currentUser, target, field, newInfo);
-}
-// Doesn't work
-function findUser (mail) {
-	var temp = User.find({ email: mail }, 
-	function (err, user) {
-		return user;
-	});
-}
-
-//initDB();
-
-
-//userUpdate('d', 'd', 'image', "Roasted");
-//adminUpdate('b', 'd', 'image', "Trolled");
 
 //setTimeout(listUsers, 2000);
 

@@ -58,8 +58,7 @@ h2 {
 }
 
 
-}
-#msg {
+.msg {
 	font-size: 28px;
 	color:red;
 	font-family: "Times New Roman", serif;

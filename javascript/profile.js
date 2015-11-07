@@ -26,7 +26,7 @@ function deleteProfile () {
 					moveTo('index');
 				}
 				else {
-					moveTo('index');
+					moveTo('landing');
 				}
 			},
 			// On Failure, print error to console
@@ -37,6 +37,42 @@ function deleteProfile () {
 	}
 }
 
+function toggleAdmin () {
+	
+	getSession(toggle);
+	
+	function toggle(sessData) {
+		$.ajax({
+			// URL for request
+			url: 'toggleAdmin',
+			// Request type
+			type: "POST",
+			// Data sent
+			contentType: 'application/json',
+			data: JSON.stringify(sessData),
+			// Expected return data
+			dataType: "html",
+			// On Success
+			success: function(data) {
+				if (data == "Error") {
+					console.log("An Error has occurred");
+					moveTo('index');
+					// TODO: Insert data into html
+				}
+				else {
+					$(".msg").html(data);
+					
+				}
+			},
+			// On Failure, print error to console
+			error: function(status, errorThrown) {
+				console.log ("Error: " + errorThrown + ", Status: " + status);
+				
+			}
+		});
+	}
+	
+}
 $(window).ready( function () {
 	console.log("Display Profile");
 	getSession(displayData);
@@ -69,11 +105,19 @@ $(window).ready( function () {
 					var txt = "Email: <br> " + data.email + "<br> Username: <br> " + username + "<br> Description: <br>" + data.desc; 
 					$("#infoPane").html(txt);
 					// TODO: Change image as well
-					console.log("sessdata: " + rawData.sessType);
-					if (rawData.sessMail != rawData.sessView && !(rawData.sessType == 'admin' || rawData.sessType == 'super'))
+					if (rawData.sessMail == undefined)
+						moveTo('landing');
+					if (rawData.sessMail != rawData.sessView && (!(rawData.sessType == 'admin' || rawData.sessType == 'super') || (rawData.sessTargetType == 'admin' || rawData.sessTargetType == 'super')))
 						$("#editBtn").hide();
-					if (!(rawData.sessType == 'admin' || rawData.sessType == 'super'))
+					// TODO: need to check the view's user type, include in sesson later
+					if (!(rawData.sessType == 'admin' || rawData.sessType == 'super') || (rawData.sessTargetType == 'admin' || rawData.sessTargetType == 'super'))
 						$("#deleteBtn").hide();
+					if (rawData.sessType != 'super' || rawData.sessView == rawData.sessMail)
+						$("#toggleAdmin").hide()
+					if (rawData.sessType == 'super') {
+						$("#deleteBtn").show();
+						$("#editBtn").show();
+					}
 				}
 			},
 			// On Failure, print error to console

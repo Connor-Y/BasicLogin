@@ -23,7 +23,7 @@ function submit() {
 				// TODO: Move to landing
 			}
 			else 
-				$("#msg").html(data);
+				$(".msg").html(data);
 		},
 		// On Failure, print error to console
 		error: function(status, errorThrown) {
