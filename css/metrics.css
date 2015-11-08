@@ -1,0 +1,23 @@
+
+#mainPane {
+	float:center;
+	text-align:center;
+}
+
+h2 {
+	padding-top: 1%;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+	margin-left:auto; 
+    margin-right:auto;
+	padding: 5px;
+	text-align: center;
+}
+
+td {
+	color: #000000;
+}
+

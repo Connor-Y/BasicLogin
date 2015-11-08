@@ -1,3 +1,6 @@
+$.ajaxSetup({
+    timeout: 2000
+});
 
 $(window).ready( function() {
 	console.log("---");
@@ -40,39 +43,47 @@ $(window).ready( function() {
 });
 
 function clickableTable () {
-	
 	$('#userTable tbody tr').on("click", function () {
-		moveTo('profile');
-		console.log("Display Profile");
+		getSession(isLoggedIn);	
 		var query = {};
-		query.mail = $(this).find(".mail").html(); 
-		console.log(JSON.stringify(query));
-		$.ajax({
-			// URL for request
-			url: 'setView',
-			// Request type
-			type: "POST",
-			// Data sent
-			data: JSON.stringify(query),
-			contentType: 'application/json',
-			// Expected return data
-			dataType: "json",
-			// On Success
-			success: function(data) {
-				if (data == "Error") {
-					console.log("An Error has occured");
-					moveTo('index');
-				}
-				else {
-					moveTo('profile');
-				}
-			},
-			// On Failure, print error to console
-			error: function(status, errorThrown) {
-				console.log ("Error: " + errorThrown + ", Status: " + status);
-				
-			}
-		}); 
+		query.mail = $(this).find(".mail").html();
+		
+		function isLoggedIn(rawData) {
+			if (rawData.result === "Invalid")
+				return false; 
+	
+			moveTo('profile');
+			console.log("Display Profile");
+			 
+			console.log(JSON.stringify(query));
+			$.ajax({
+				// URL for request
+				url: 'setView',
+				// Request type
+				type: "POST",
+				// Data sent
+				data: JSON.stringify(query),
+				contentType: 'application/json',
+				// Expected return data
+				dataType: "json",
+				// On Success
+				success: function(data) {
+					if (data == "Error") {
+						console.log("An Error has occurred");
+						moveTo('landing');
+					}
+					else {
+						moveTo('profile');
+					}
+				},
+				// On Failure, print error to console
+				error: function(status, errorThrown) {
+					console.log ("Error: " + errorThrown + ", Status: " + status);
+					
+				},
+				timeout: 2000
+			}); 
+		}
 	});
 }	
 

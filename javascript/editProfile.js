@@ -1,4 +1,6 @@
-
+$.ajaxSetup({
+    timeout: 2000
+});
 $(window).ready( function () {
 	console.log("Display Edit Profile");
 	getSession(displayEditData);

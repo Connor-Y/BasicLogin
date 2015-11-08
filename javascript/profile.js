@@ -1,3 +1,6 @@
+$.ajaxSetup({
+    timeout: 2000
+});
 
 function editProfile () {
 	moveTo('editProfile');
@@ -75,9 +78,18 @@ function toggleAdmin () {
 }
 $(window).ready( function () {
 	console.log("Display Profile");
+	// If not logged in, move back to front page
+	if (typeof getSession == "undefined") {
+		console.log("Undefined Session");
+		window.location.href = '/';
+	}
+	// Get the current users data
 	getSession(displayData);
-	
+	// Display the selected profile
+	// Along with buttons that the current user has access to.
 	function displayData(rawData) {
+		console.log("Raw Data: " + rawData);
+		
 		$.ajax({
 			// URL for request
 			url: 'profile',
@@ -93,7 +105,6 @@ $(window).ready( function () {
 				if (data == "Error") {
 					console.log("An Error has occured");
 					moveTo('index');
-					// TODO: Insert data into html
 				}
 				else {
 					console.log(data);
@@ -109,12 +120,11 @@ $(window).ready( function () {
 						moveTo('landing');
 					if (rawData.sessMail != rawData.sessView && (!(rawData.sessType == 'admin' || rawData.sessType == 'super') || (rawData.sessTargetType == 'admin' || rawData.sessTargetType == 'super')))
 						$("#editBtn").hide();
-					// TODO: need to check the view's user type, include in sesson later
 					if (!(rawData.sessType == 'admin' || rawData.sessType == 'super') || (rawData.sessTargetType == 'admin' || rawData.sessTargetType == 'super'))
 						$("#deleteBtn").hide();
 					if (rawData.sessType != 'super' || rawData.sessView == rawData.sessMail)
 						$("#toggleAdmin").hide()
-					if (rawData.sessType == 'super') {
+					if (rawData.sessType == 'super' && rawData.sessView != rawData.sessMail) {
 						$("#deleteBtn").show();
 						$("#editBtn").show();
 					}

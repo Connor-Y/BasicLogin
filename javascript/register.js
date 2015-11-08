@@ -1,5 +1,6 @@
-
-
+$.ajaxSetup({
+    timeout: 2000
+});
 function submit() {
 	console.log("Submit Registration");
 	var data = {}
@@ -8,6 +9,7 @@ function submit() {
 	else {
 		data.mail = $("#emailField").val();
 		data.pass = $("#passField").val();
+		data.IP = clientIP;
 		console.log(JSON.stringify(data));
 		$.ajax({
 			// URL for request
@@ -28,6 +30,8 @@ function submit() {
 					$("#msg").html("Registration Successful, redirecting to main page");
 				} else if (data === "User Exists") {
 					$("#msg").html("Email already in use.");
+				} else if (data === "Invalid") {
+					$("#msg").html("Invalid Name/Password");
 				}
 				else {
 					$("#msg").html("An error has occured. Please try again.");

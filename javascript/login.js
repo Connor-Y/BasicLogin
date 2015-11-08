@@ -1,10 +1,12 @@
-
-
+$.ajaxSetup({
+    timeout: 2000
+});
 function submit() {
 	console.log("Submit Login");
 	var data = {}
 	data.mail = $("#emailField").val();
 	data.pass = $("#passField").val();
+	data.ip = clientIP;
 	console.log(JSON.stringify(data));
 	$.ajax({
 		// URL for request

@@ -7,19 +7,25 @@ var mongoClient = require('mongodb').MongoClient;
 var mongoose = require('mongoose');
 var PORT = 3000;
 
-var testNum = "test20";
+var testNum = "test28";
 var uniqueTestDB = testNum;
+var htmlDir = "/html/";
+var uniqueTestDB2 = "metricTest3";
 
 var express = require('express');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var app = express();
 
-app.use(session({secret: '228974482',
+app.use(session({
+	secret: '228974482',
 	resave: false,
 	saveUninitialized: true
-	}));
+}));
 
+
+	
+	
 
 app.use(express.static('javascript'));
 app.use(express.static('html'));
@@ -27,7 +33,6 @@ app.use(express.static('css'));
 
 app.use(bodyParser.json());
 
-// TODO: Store currentUser Send info back to client? (REST)
 app.post("/loginVerification", function (req, res) {
 	console.log("Login Request Received");
 	User.findOne({ "email": req.body.mail }, 
@@ -45,6 +50,7 @@ app.post("/loginVerification", function (req, res) {
 			sess.type = user.type;
 			sess.view = "landing";
 			sess.targetType = null;
+			userUpdate(req.body.mail, 'ip', req.body.ip);
 			res.send("Success");
 		}
 		else {
@@ -71,6 +77,10 @@ app.post("/registration", function (req, res) {
 		if (err) {
 			console.log(err);
 			res.send("Error");
+		}
+		if (req.body.mail == undefined || req.body.pass == undefined){
+			res.send("Invalid");
+			return false;
 		}
 		if (user == null) {
 			console.log("New User");
@@ -111,6 +121,7 @@ app.post("/setView", function (req, res) {
 				sess.targetType = null;
 			} else {
 				sess.targetType = user.type;
+				addLog(sess.view);
 			}
 		});
 	}
@@ -165,7 +176,7 @@ app.post("/deleteProfile", function (req, res) {
 		}
 	});
 	if (req.body.sessView == req.body.sessMail)
-		sess.mail = "";
+		sess.email = "";
 	sess.view = "index";
 	res.send("Success");
 });
@@ -210,13 +221,34 @@ app.post("/toggleAdmin", function (req, res) {
 	}
 });
 
+app.post("/logInfo", function (req, res) {
+	console.log("Log Info");
+	addLog(req.body);
+	res.send("Success");
+});
 
+app.post("/loadMetrics", function (req, res) {
+	if (sess.type != 'admin' || sess.type != 'super')
+		res.redirect('landing');
+	else {
+		Metric.find({}, function (err, metrics) {
+			if (err)
+				res.send("Error");
+			else {
+				console.log(JSON.stringify(metrics));
+				res.send(JSON.stringify(metrics));
+			}
+		}
+	}
+});
 
 app.get("*", function (req, res) {
 	res.redirect('/');	
 });
 
 app.listen(PORT);
+
+
 
 function userUpdate (target, field, newInfo) {
 	console.log("User Update");
@@ -236,6 +268,28 @@ function userUpdate (target, field, newInfo) {
 	});				
 }
 
+function addLog (data) {
+	console.log("Add Log");
+	var curUser;
+	if (sess == undefined || sess.email == undefined)
+		curUser = "";
+	else
+		curUser = sess.email;
+	// TODO: get ip
+	var curIP = '0';
+	var curLat = data.lati;
+	var curLong = data.longi;
+	var curOS = data.os;
+	var curBrowser = data.browser;
+	var curPage;
+	if (data.pg == "profile" || data.pg == "editProfile")
+		curPage = data.pg + "/" + sess.view;
+	else
+		curPage = data.pg;
+	var newLog = new Metric({user: curUser, ip: curIP, latitude: curLat, longitude: curLong, os: curOS, browser: curBrowser, page: curPage});
+	newLog.save();
+}
+
 // Database code below
 
 mongoose.connect('mongodb://localhost/DB', PORT);
@@ -252,6 +306,18 @@ var userSchema = mongoose.Schema({
 	image: String,
 	desc: String,
 });
+
+var metricSchema = mongoose.Schema({
+	user: String,
+	ip: String,
+	latitude: String,
+	longitude: String,
+	os: String,
+	broswer: String	,
+	page: String
+});
+
+
 console.log("Schema built");
 
 userSchema.methods.getData = function () {
@@ -262,6 +328,7 @@ userSchema.methods.getData = function () {
 console.log("Methods Added");
 
 var User = mongoose.model('User', userSchema, uniqueTestDB);
+var Metric = mongoose.model('Metric', metricSchema, uniqueTestDB2);
 console.log("Model Created");
 
 // Test Code - Db insertion
@@ -269,7 +336,7 @@ function initDB () {
 	var one = new User({username:"Alice", password:"Lord", type:"super", email:"a", image: "default.png", desc:""});
 	var two = new User({username:"Bob", password:"second", type:"admin", email:"b", image: "default.png", desc:""});
 	var three = new User({username:"Eve", password:"Stalker", type:"user", email:"c", image: "default.png", desc:""});
-
+	
 	one.save();
 	two.save();
 	three.save();
