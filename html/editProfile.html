@@ -16,20 +16,20 @@
 
 
 <body>
-	<div id="swapPane">
-		<div id="mainPane">
+	<div class="swapPane">
+		<div class="mainPane">
 			<h1> User's Profile </h1>
-			<div id="mainText">
+			<div class="mainText">
 				<div id="profileImage">
 					<img id="image" src="default.png" alt="Image not Found">
 				</div>
 				<br>
 				<div id="editPane">
-					Email: <br> Static <br>
+					<br> <div id="editEmail"></div> <br>
 					Display Name: <br> <input type="text" id="newName"> <br>
 					Description: <br> <textarea id="newDesc" rows="5" cols="50"></textarea> <br>
 				<button type="button" class="btn" onclick="save()">Save</button>
-				<button type="button" class="btn" onclick="moveTo('landing')">Cancel</button>
+				<button type="button" class="btn" onclick="moveTo('profile')">Cancel</button>
 				</div>
 				<br>
 				<div class="msg"> </div>
@@ -45,8 +45,8 @@
 </body>
 
 
-<div id="topBar"> </div>
-<div id="bottomBar"> </div>
+<div class="topBar"><img class="logo" src="logo.png" alt="Logo" onclick="logoClicked()"</img> </div>
+<div class="bottomBar"> </div>
 	
 
 </html>

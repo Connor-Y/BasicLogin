@@ -11,7 +11,7 @@ function moveTo(page) {
 		// On Success, atttempt to perform action on received data.
 		success: function(newFile) {
 			console.log("Load Success");
-			$("#swapPane").html(newFile);
+			$(".swapPane").html(newFile);
 		},
 		// On Failure, print error to console
 		error: function(status, errorThrown) {
@@ -43,6 +43,18 @@ function getSession(callback) {
 			
 		}
 	});
+}
+
+function logoClicked() {
+	getSession(isLoggedIn);
+	
+	function isLoggedIn(rawData) {
+		if (rawData.result === "Invalid")
+			moveTo('index');
+		else
+			moveTo('landing');
+		 
+	}
 	
 }
 	

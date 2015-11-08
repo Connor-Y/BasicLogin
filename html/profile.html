@@ -3,6 +3,7 @@
 <html>
 
 <head>
+	<link rel="stylesheet" type="text/css" href="index.css">
 	<link rel="stylesheet" type="text/css" href="profile.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script src="profile.js"></script>
@@ -11,32 +12,29 @@
 </head>
 
 
-	
-	
-
-
 <body>
-	<div id="swapPane">
-		<div id="mainPane">
+	<div class="swapPane">
+		<div class="mainPane">
 			<h1> User's Profile </h1>
-			<div id="mainText">
+			<div class="mainText">
 				<div id="profileImage">
 					<img id="image" src="default.png" alt="Image not Found">
 				</div>
-				<div class="msg">
-				</div>
-				<br>
+				<div class="msg"></div>
+	
 				<div id="infoPane">
 				</div>
 			<button id="editBtn" type="button" class="btn" onclick="editProfile()">Edit Profile</button>
-			<button id="deleteBtn" type="button" class="btn" onclick="deleteProfile()">Delete Profile</button>
 			<br>
+			<button type="button" class="btn" onclick="moveTo('landing')">Back</button> 
+			<br>
+			<button id="deleteBtn" type="button" class="btn" onclick="deleteProfile()">Delete Profile</button>
 			<button id="toggleAdmin" type="button" class="btn" onclick="toggleAdmin()">Toggle Admin</button>
 			</div>
 		</div>
 	</div>
 </body>
 
-<div id="topBar"> </div>
-<div id="bottomBar"> </div>
+<div class="topBar"><img class="logo" src="logo.png" alt="Logo" onclick="logoClicked()"</img> </div>
+<div class="bottomBar"> </div>
 </html>

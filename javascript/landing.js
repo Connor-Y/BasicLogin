@@ -1,16 +1,16 @@
 
-$(window).ready( function() {
+$(window).load(function() {
 	console.log("---");
 	$.ajax({
 			// URL for request
 			url: 'loadTable',
 			// Request type
 			type: "POST",
-
 			// Expected return data
 			dataType: "json",
 			// On Success
 			success: function(data) {
+				console.log("Load table");
 				if (data) {
 					var len = data.length;
 					var txt = "";
@@ -39,7 +39,7 @@ $(window).ready( function() {
 			}
 	});
 });
-
+alert("JS");
 function clickableTable () {
 	
 	$('#userTable tbody tr').on("click", function () {

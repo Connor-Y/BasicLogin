@@ -4,7 +4,7 @@ function submit() {
 	console.log("Submit Registration");
 	var data = {}
 	if ($("#verifyPassField").val() != $("#passField").val())
-		$("#msg").html("Passwords don't match");
+		$(".msg").html("Passwords don't match");
 	else {
 		data.mail = $("#emailField").val();
 		data.pass = $("#passField").val();
@@ -23,14 +23,14 @@ function submit() {
 			success: function(data) {
 				if (data === "Success") {
 					setTimeout(function() {
-						window.location.href = "/index.html";
+						window.location.href = "/";
 					}, 2000);
-					$("#msg").html("Registration Successful, redirecting to main page");
+					$(".msg").html("Registration Successful, redirecting to main page");
 				} else if (data === "User Exists") {
-					$("#msg").html("Email already in use.");
+					$(".msg").html("Email already in use.");
 				}
 				else {
-					$("#msg").html("An error has occured. Please try again.");
+					$(".msg").html("An error has occurred. Please try again.");
 				}
 			},
 			// On Failure, print error to console

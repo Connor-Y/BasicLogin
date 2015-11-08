@@ -2,6 +2,7 @@
 
 function submit() {
 	console.log("Submit Login");
+	
 	var data = {}
 	data.mail = $("#emailField").val();
 	data.pass = $("#passField").val();
@@ -20,7 +21,6 @@ function submit() {
 		success: function(data) {
 			if (data == "Success") {
 				moveTo('landing');
-				// TODO: Move to landing
 			}
 			else 
 				$(".msg").html(data);

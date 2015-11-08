@@ -1,6 +1,7 @@
 <html>
 
 <head>
+	<link rel="stylesheet" type="text/css" href="index.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script src="login.js"></script>
 	<title>Login</title>
@@ -9,19 +10,20 @@
 	
 
 <body>
-	<div id="swapPane">
-		<div id="mainPane">
+	<div class="swapPane">
+		<div class="mainPane">
 			<h1>Verify Your Identity</h1>
-			<div class="msg">
-			</div>
+			<div class="msg"></div>
 			<input id="emailField" type="text" placeholder="Email">
 			<br>
 			<input id="passField" type="password" placeholder="Password">
 			<br>
+			<button type="button" class="btn" onclick="moveTo('index')">Cancel</button>
 			<button type="button" class="btn" onclick="submit()">Login</button>
 		</div>
 	</div>
 </body>
 
-
+<div class="topBar"><img class="logo" src="logo.png" alt="Logo" onclick="logoClicked()"</img> </div>
+<div class="bottomBar"> </div>
 </html>
