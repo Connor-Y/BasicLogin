@@ -10,7 +10,7 @@ var PORT = 3000;
 var testNum = "test28";
 var uniqueTestDB = testNum;
 var htmlDir = "/html/";
-var uniqueTestDB2 = "metricTest3";
+var uniqueTestDB2 = "metricTest4";
 
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -222,23 +222,33 @@ app.post("/toggleAdmin", function (req, res) {
 });
 
 app.post("/logInfo", function (req, res) {
-	console.log("Log Info");
 	addLog(req.body);
 	res.send("Success");
 });
 
 app.post("/loadMetrics", function (req, res) {
-	if (sess.type != 'admin' || sess.type != 'super')
-		res.redirect('landing');
+	console.log("Load Metrics");
+	if (sess == undefined || sess.type == 'user') {
+		res.send("Invalid");
+	}
 	else {
+		console.log("find");
 		Metric.find({}, function (err, metrics) {
 			if (err)
 				res.send("Error");
 			else {
-				console.log(JSON.stringify(metrics));
 				res.send(JSON.stringify(metrics));
 			}
-		}
+		});
+	}
+});
+
+app.post("/logout", function (req, res) {
+	if (sess == undefined)
+		res.send("Invalid");
+	else {
+		sess = undefined;
+		res.send("Success");
 	}
 });
 
@@ -269,7 +279,6 @@ function userUpdate (target, field, newInfo) {
 }
 
 function addLog (data) {
-	console.log("Add Log");
 	var curUser;
 	if (sess == undefined || sess.email == undefined)
 		curUser = "";
@@ -313,38 +322,17 @@ var metricSchema = mongoose.Schema({
 	latitude: String,
 	longitude: String,
 	os: String,
-	broswer: String	,
+	browser: String,
 	page: String
 });
 
 
 console.log("Schema built");
 
-userSchema.methods.getData = function () {
-	var data = "Username: " + this.username + " | Usertype: " + this.type;
-	console.log(data);
-}
-
-console.log("Methods Added");
 
 var User = mongoose.model('User', userSchema, uniqueTestDB);
 var Metric = mongoose.model('Metric', metricSchema, uniqueTestDB2);
 console.log("Model Created");
 
-// Test Code - Db insertion
-function initDB () {
-	var one = new User({username:"Alice", password:"Lord", type:"super", email:"a", image: "default.png", desc:""});
-	var two = new User({username:"Bob", password:"second", type:"admin", email:"b", image: "default.png", desc:""});
-	var three = new User({username:"Eve", password:"Stalker", type:"user", email:"c", image: "default.png", desc:""});
-	
-	one.save();
-	two.save();
-	three.save();
 
-	console.log("Users added");
-	console.log("---");	
-} // Test Code End
-
-
-//setTimeout(listUsers, 2000);
 

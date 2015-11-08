@@ -3,6 +3,7 @@ $.ajaxSetup({
     timeout: 2000
 });
 
+
 function getLocation(page) {
     if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function (position) {
@@ -15,8 +16,6 @@ function getLocation(page) {
 
 
 function logData(coords, page) {
-	console.log("coords: " + coords);
-	console.log(page);
 	data = {};
 	if (coords.length == 0) {
 		data.lati = "";
@@ -28,7 +27,7 @@ function logData(coords, page) {
 	data.ip = "0";
 	data.pg = page;
 	data.os = navigator.platform;
-	data.browser = navigator.product;
+	data.browser = navigator.userAgent;
 	console.log("Move To Client Data: " + JSON.stringify(data));
 	$.ajax({
 		// URL for request
@@ -113,40 +112,26 @@ function logoClicked() {
 }
 
 
-//$(window).ready({
-function loadMetrics() {
+function logoutClicked() {
 	$.ajax({
-			// URL for request
-			url: 'loadMetrics',
-			// Request type
-			type: "POST",
-			// Expected return data
-			dataType: "json",
-			// On Success
-			success: function(data) {
-				if (data) {
-					console.log(data);
-					var len = data.length;
-					var txt = "";
-					if (len > 0) {
-						for (var i = 0; i < len; i++) {
-							if (data[i] == undefined)
-								continue;
-							
-							
-						//	txt += "<tr><td>" + displayName + "</td><td class='mail'>" + data[i].email + "</td></tr>";	
-						}
-						if (txt != "") {
-							$("#userTable tbody").append(txt);
-						}
-					}
-					clickableTable();
-				}
-			},
+		// URL for request
+		url: 'logout',
+		// Request type
+		type: "POST",
+		// Expected data
+		dataType: "html",
+		// On Success, atttempt to perform action on received data.
+		success: function(data) {
+			if (data == "Success")
+				moveTo('index');
+		},
+		// On Failure, print error to console
+		error: function(status, errorThrown) {
+			console.log ("Error: " + errorThrown + ", Status: " + status);
 			
-			error: function(status, errorThrown) {
-				console.log ("Error: " + errorThrown + ", Status: " + status);
-			}
+		}
 	});
-}//);
+	
+	
+}
 	
