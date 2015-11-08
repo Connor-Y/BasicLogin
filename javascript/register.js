@@ -23,8 +23,8 @@ function submit() {
 			success: function(data) {
 				if (data === "Success") {
 					setTimeout(function() {
-						window.location.href = "/index.html";
-					}, 2000);
+						window.location.href = "/";
+					}, 1500);
 					$("#msg").html("Registration Successful, redirecting to main page");
 				} else if (data === "User Exists") {
 					$("#msg").html("Email already in use.");

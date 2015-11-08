@@ -51,10 +51,8 @@ app.post("/loginVerification", function (req, res) {
 			console.log("Invalid Login");
 			res.send("Invalid Login"); 
 		}
-		
 	});
 });
-
 
 app.post("/loadTable", function (req, res) {
 	console.log("Load Table");
@@ -67,8 +65,6 @@ app.post("/loadTable", function (req, res) {
 	});
 });
 			
-			
-			
 app.post("/registration", function (req, res) {
 	console.log("Registration Request Received");
 	User.findOne({ email: req.body.mail }, function (err, user) {
@@ -77,7 +73,6 @@ app.post("/registration", function (req, res) {
 			res.send("Error");
 		}
 		if (user == null) {
-			console.log("User1: " + user);
 			console.log("New User");
 			var firstUser = false;
 			User.findOne({}, function (err, result) {
@@ -141,9 +136,12 @@ app.post("/profile", function (req, res) {
 
 app.post("/getSession", function (req, res) {
 	console.log("Session Request");
-	var temp = {sessMail: sess.email, sessType: sess.type, sessView: sess.view, sessTargetType: sess.targetType};
-	res.send(JSON.stringify(temp));
-	
+	if (sess == undefined)
+		res.send(JSON.stringify({result: "Invalid"}));
+	else {
+		var temp = {sessMail: sess.email, sessType: sess.type, sessView: sess.view, sessTargetType: sess.targetType};
+		res.send(JSON.stringify(temp));
+	}
 });
 
 app.post("/saveProfile", function (req, res) {
@@ -163,12 +161,40 @@ app.post("/deleteProfile", function (req, res) {
 		if (err) {
 			console.log("Error: " + err);
 			res.send("Error");
+			return false;
 		}
 	});
 	if (req.body.sessView == req.body.sessMail)
 		sess.mail = "";
 	sess.view = "index";
 	res.send("Success");
+});
+
+app.post("/changePassword", function (req, res) {
+	console.log("Change Password");
+	User.findOne({ "email": req.body.sessView }, 
+	function (err, user) {
+		if (err) {
+			console.log("changePass Error " + err);
+			res.send("Error"); 
+			return false;
+		}
+		if (user == undefined) {
+			res.send("Error");
+		}
+		if (req.body.oldPass === user.password) { 
+			var ret = userUpdate(req.body.sessView, 'password', req.body.newPass);
+			if (ret !== false)
+				res.send("Success");
+			else {
+				res.send("Error");
+				return false;
+			}
+		}
+		else {
+			res.send("Invalid"); 
+		}	
+	});
 });
 
 app.post("/toggleAdmin", function (req, res) {
@@ -183,6 +209,14 @@ app.post("/toggleAdmin", function (req, res) {
 		res.send(req.body.sessView + " is now an Admin");
 	}
 });
+
+
+
+app.get("*", function (req, res) {
+	res.redirect('/');	
+});
+
+app.listen(PORT);
 
 function userUpdate (target, field, newInfo) {
 	console.log("User Update");
@@ -201,14 +235,6 @@ function userUpdate (target, field, newInfo) {
 		}
 	});				
 }
-
-
-app.get("*", function (req, res) {
-	res.redirect('/');	
-});
-
-app.listen(PORT);
-
 
 // Database code below
 

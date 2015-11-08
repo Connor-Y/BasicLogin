@@ -45,4 +45,15 @@ function getSession(callback) {
 	});
 	
 }
+
+function logoClicked() {
+	getSession(isLoggedIn);	
+	
+	function isLoggedIn(rawData) {
+		if (rawData.result === "Invalid")
+			moveTo('index');
+		else
+			moveTo('landing');	 
+	}	
+}
 	

@@ -3,18 +3,14 @@
 <html>
 
 <head>
+	<link rel="stylesheet" type="text/css" href="index.css">
 	<link rel="stylesheet" type="text/css" href="landing.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="index.js"></script>
 	<script src="landing.js"></script>
 	
 	<title>Assignment 4 CURD</title>
 </head>
-
-<div id="topBar"> </div>
-
-<div id="bottomBar"> </div>
-	
-	
 
 
 <body>
@@ -24,7 +20,8 @@
 			
 			<div id="mainText">
 				<table id="userTable">
-					<thead><h2> User List </h2>
+					<thead>
+					<h2> User List </h2>
 					<tr>
 						<th>Username</th>
 						<th>User Email</th>
@@ -38,5 +35,7 @@
 	</div>
 </body>
 
+<div id="topBar"><img class="logo" src="logo.png" alt="Logo" onclick="logoClicked()"</img> </div>
+<div id="bottomBar"> </div>
 
 </html>

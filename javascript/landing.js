@@ -6,7 +6,6 @@ $(window).ready( function() {
 			url: 'loadTable',
 			// Request type
 			type: "POST",
-
 			// Expected return data
 			dataType: "json",
 			// On Success

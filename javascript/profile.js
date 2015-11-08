@@ -60,7 +60,7 @@ function toggleAdmin () {
 					// TODO: Insert data into html
 				}
 				else {
-					$(".msg").html(data);
+					$("#msg").html(data);
 					
 				}
 			},

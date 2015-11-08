@@ -23,20 +23,21 @@
 				<div id="profileImage">
 					<img id="image" src="default.png" alt="Image not Found">
 				</div>
-				<div class="msg">
+				<div id="msg">
 				</div>
 				<br>
 				<div id="infoPane">
 				</div>
+			<button type="button" class="btn" onclick="moveTo('landing')">Back</button> 
 			<button id="editBtn" type="button" class="btn" onclick="editProfile()">Edit Profile</button>
-			<button id="deleteBtn" type="button" class="btn" onclick="deleteProfile()">Delete Profile</button>
 			<br>
+			<button id="deleteBtn" type="button" class="btn" onclick="deleteProfile()">Delete Profile</button>
 			<button id="toggleAdmin" type="button" class="btn" onclick="toggleAdmin()">Toggle Admin</button>
 			</div>
 		</div>
 	</div>
 </body>
 
-<div id="topBar"> </div>
+<div id="topBar"><img class="logo" src="logo.png" alt="Logo" onclick="logoClicked()"</img> </div>
 <div id="bottomBar"> </div>
 </html>
